@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AutoZip Uploader</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: #121a2f;
+        --muted: #8aa0c8;
+        --text: #e6eefc;
+        --accent: #2ea3ff;
+        --accent-2: #11c48e;
+        --danger: #ff6b6b;
+        --radius: 10px;
+      }
+      html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--text); background: var(--bg); }
+      .wrap { width: 360px; padding: 16px; }
+      .card { background: var(--panel); border-radius: var(--radius); padding: 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.3); }
+      h1 { margin: 0 0 8px; font-size: 18px; }
+      p { margin: 0 0 12px; color: var(--muted); font-size: 12px; }
+      .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+      .btn { appearance: none; border: 1px solid rgba(255,255,255,0.1); background: #0f1730; color: var(--text); border-radius: 8px; padding: 8px 10px; font-size: 12px; cursor: pointer; }
+      .btn.primary { background: var(--accent); border-color: var(--accent); color: #001428; font-weight: 600; }
+      .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+      .select, .text { width: 100%; background: #0f1730; color: var(--text); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px; font-size: 12px; }
+      .list { margin-top: 10px; border: 1px dashed rgba(255,255,255,0.12); border-radius: 8px; padding: 8px; max-height: 140px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+      .muted { color: var(--muted); font-size: 12px; }
+      .ok { color: var(--accent-2); }
+      .err { color: var(--danger); }
+      .progress { height: 4px; background: #0e1530; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+      .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), #8be4ff); transition: width .2s ease; }
+      .row-2 { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+      label.inline { display: inline-flex; gap: 8px; align-items: center; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="card">
+        <h1>AutoZip Uploader</h1>
+        <p>Select files, then create an archive to download. Folder selection is intentionally removed.</p>
+
+        <div class="row">
+          <input id="fileInput" type="file" multiple hidden />
+          <button id="selectFilesBtn" class="btn">Select files…</button>
+        </div>
+
+        <div id="selected" class="list muted">No files selected.</div>
+
+        <div class="row" style="margin-top:10px;">
+          <select id="format" class="select" title="Archive format">
+            <option value="zip">zip</option>
+            <option value="tar">tar</option>
+            <option value="tar.gz">tar.gz</option>
+            <option value="gz">gz (single file)</option>
+          </select>
+        </div>
+
+        <div class="row-2" style="margin-top:10px;">
+          <input id="name" class="text" placeholder="archive name (optional)" />
+          <label class="inline"><input type="checkbox" id="ts" /> <span class="muted">timestamp</span></label>
+        </div>
+
+        <div class="progress"><div id="bar" class="bar"></div></div>
+        <div id="status" class="muted"></div>
+
+        <div class="row" style="margin-top:10px;">
+          <button id="create" class="btn primary">Create archive</button>
+          <button id="reset" class="btn">Reset</button>
+        </div>
+
+        <p class="muted" style="margin-top:10px;">
+          Note: Extensions cannot auto-fill system file dialogs. This creates the archive for you to download locally.
+        </p>
+      </section>
+    </main>
+    <script src="popup-simple.js"></script>
+  </body>
+</html>

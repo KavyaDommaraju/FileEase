@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "AutoZip Uploader (Extension)",
+  "version": "1.0.0",
+  "description": "Create a ZIP from selected files or a folder, then download it for easy uploading.",
+  "action": {
+    "default_title": "AutoZip",
+    "default_popup": "popup-simple.html"
+  },
+  "permissions": ["downloads"],
+  "icons": {
+    "16": "icons/icon16.jpg",
+    "32": "icons/icon32.jpg",
+    "48": "icons/icon48.jpg",
+    "128": "icons/icon128.jpg"
+  }
+}

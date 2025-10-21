@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'self'">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AutoZip Uploader</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0f172a;        /* slate-900 */
+        --fg: #e5e7eb;        /* gray-200 */
+        --muted: #94a3b8;     /* slate-400 */
+        --primary: #38bdf8;   /* sky-400 */
+        --accent: #22c55e;    /* green-500 */
+        --danger: #ef4444;    /* red-500 */
+        --card: #111827;      /* gray-900 */
+        --border: #1f2937;    /* gray-800 */
+        --radius: 0.5rem;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      }
+      .card {
+        width: 560px;
+        max-width: 92vw;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px 18px 16px;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      .btn {
+        background: transparent;
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      .btn:hover { border-color: #334155; }
+      .btn.primary {
+        background: var(--primary);
+        color: #001018;
+        border: none;
+        font-weight: 600;
+      }
+      .btn.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+      .select, .input {
+        background: #0b1220;
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 8px 10px;
+      }
+      .input { flex: 1; min-width: 160px; }
+      .list {
+        margin-top: 12px;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        padding: 10px;
+        max-height: 160px;
+        overflow: auto;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        background: #0b1220;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+      .hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
+      .progress {
+        width: 100%;
+        height: 6px;
+        border-radius: 999px;
+        background: #0b1220;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        margin: 12px 0 8px;
+      }
+      .bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.2s ease; }
+      .error { color: var(--danger); font-size: 12px; }
+      .split { display: flex; gap: 10px; align-items: center; }
+      .checkbox { display: inline-flex; gap: 8px; align-items: center; color: var(--muted); }
+      .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+      /* add drop zone styling for folder drag-and-drop fallback */
+      .drop {
+        margin-top: 10px;
+        border: 1px dashed var(--border);
+        border-radius: var(--radius);
+        padding: 14px;
+        text-align: center;
+        color: var(--muted);
+        background: #0b1220;
+      }
+      .drop.dragover {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+        color: var(--fg);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>AutoZip Uploader</h1>
+
+      <div class="row">
+        <button id="btnFiles" class="btn">Select files…</button>
+        <button id="btnFolder" class="btn">Select folder…</button>
+        <input id="fileInput" class="sr-only" type="file" multiple />
+        <input id="dirInput" class="sr-only" type="file" webkitdirectory directory />
+      </div>
+
+      <!-- add drag-and-drop fallback for folders/files -->
+      <div id="dropZone" class="drop" aria-label="Drop zone">
+        Drag and drop files or a folder here
+      </div>
+
+      <div id="selection" class="list" aria-live="polite">No files selected</div>
+
+      <div class="row" style="margin-top:10px">
+        <label class="checkbox">
+          <input id="ts" type="checkbox" />
+          <span>Append timestamp to archive name</span>
+        </label>
+
+        <select id="format" class="select">
+          <option value="zip">zip</option>
+          <option value="tar">tar</option>
+          <option value="tar.gz">tar.gz</option>
+          <option value="gz">gz (single file)</option>
+        </select>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <input id="name" class="input" placeholder="archive name (optional)" />
+        <button id="create" class="btn primary">Create archive</button>
+      </div>
+
+      <div class="progress"><div id="bar" class="bar"></div></div>
+      <div id="status" class="hint">Ready</div>
+      <div id="error" class="error" role="alert" aria-live="assertive"></div>
+
+      <p class="hint">
+        Note: Browser extensions cannot auto-fill your system file picker. This tool creates your archive for download so you can upload it anywhere.
+      </p>
+    </main>
+
+    <script type="module" src="popup-v2.js"></script>
+  </body>
+</html>

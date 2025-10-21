@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AutoZip</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --bg: #0b0f14;
+        --card: #121922;
+        --text: #e6eef6;
+        --muted: #a9b6c6;
+        --accent: #2483ff;
+        --accent-contrast: #ffffff;
+        --border: #1e2a38;
+        --radius: 10px;
+      }
+      html, body {
+        margin: 0; padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+          Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
+          "Segoe UI Emoji";
+      }
+      .wrap {
+        width: 360px; max-width: 100%;
+        padding: 16px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+      h1 {
+        font-size: 16px;
+        margin: 0 0 10px 0;
+        line-height: 1.3;
+      }
+      .muted { color: var(--muted); font-size: 12px; }
+      .row { display: flex; gap: 8px; align-items: center; }
+      .col { display: flex; flex-direction: column; gap: 8px; }
+      .btn {
+        appearance: none; border: 1px solid var(--border);
+        background: transparent; color: var(--text);
+        padding: 8px 10px; border-radius: 8px; cursor: pointer;
+      }
+      .btn.primary {
+        background: var(--accent);
+        color: var(--accent-contrast);
+        border-color: transparent;
+      }
+      .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      .check { display: flex; gap: 8px; align-items: center; }
+      .progress {
+        width: 100%;
+        height: 6px;
+        background: #0f1720;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .bar {
+        width: 0%;
+        height: 100%;
+        background: var(--accent);
+        transition: width 0.2s linear;
+      }
+      .filelist {
+        max-height: 120px;
+        overflow: auto;
+        border: 1px dashed var(--border);
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 12px;
+      }
+      .small { font-size: 12px; }
+      label input[type="file"] {
+        display: none;
+      }
+      .chooser {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px dashed var(--border);
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>AutoZip Uploader</h1>
+        <p class="muted">Select files or a folder, then create a ZIP archive to download and upload anywhere.</p>
+
+        <div class="col" style="margin-top: 10px;">
+          <div class="row">
+            <label class="chooser">
+              <input id="fileInput" type="file" multiple />
+              <span>Select files…</span>
+            </label>
+            <label class="chooser">
+              <input id="dirInput" type="file" webkitdirectory directory />
+              <span>Select folder…</span>
+            </label>
+            <input type="hidden" />
+          </div>
+
+          <div class="filelist" id="fileList" aria-live="polite"></div>
+
+          <div class="row" style="justify-content: space-between;">
+            <div class="check">
+              <input id="addTs" type="checkbox" />
+              <label for="addTs" class="small">Append timestamp to archive name</label>
+            </div>
+            <div>
+              <select id="format" class="btn small">
+                <option value="zip">zip</option>
+                <option value="tar">tar</option>
+                <option value="tar.gz">tar.gz</option>
+                <option value="gz">gz (single file)</option>
+                <option value="7z" disabled>7z (requires WASM; ask to enable)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top: 8px;">
+            <input id="archiveName" class="btn" style="flex:1" placeholder="archive name (optional)" />
+            <button id="makeZip" class="btn primary">Create archive</button>
+          </div>
+
+          <div class="progress" style="margin-top: 10px;">
+            <div id="bar" class="bar"></div>
+          </div>
+          <div class="row" style="justify-content: space-between; margin-top: 6px;">
+            <span id="status" class="muted">Idle</span>
+            <span id="count" class="muted"></span>
+          </div>
+        </div>
+
+        <p class="muted" style="margin-top: 10px;">
+          Note: Browser extensions cannot auto-fill your system file picker. This creates the archive for you to download and then upload in your workflow.
+        </p>
+      </div>
+    </div>
+
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>
